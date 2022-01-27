@@ -1,0 +1,413 @@
+@prefix : <https://alasdairgray.github.io/ns/StaffStudent.owl#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix xsp: <http://www.owl-ontologies.com/2005/08/07/xsp.owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix swrl: <http://www.w3.org/2003/11/swrl#> .
+@prefix swrlb: <http://www.w3.org/2003/11/swrlb#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix protege: <http://protege.stanford.edu/plugins/owl/protege#> .
+@base <https://alasdairgray.github.io/ns/StaffStudent.owl> .
+
+<https://alasdairgray.github.io/ns/StaffStudent.owl> rdf:type owl:Ontology ;
+                                                      dcterms:creator <http://orcid.org/0000-0002-5711-4872> ,
+                                                                      <https://orcid.org/0000-0002-5492-8635> ,
+                                                                      "Alasdair Gray" ,
+                                                                      "Albert Burger" ;
+                                                      dcterms:description "Ontology representing staff and students at a fictional university. This ontology is used for teaching OWL in the Big Data Management Course at Heriot-Watt University."@en ;
+                                                      dcterms:license <http://creativecommons.org/licenses/by/4.0/> ;
+                                                      dcterms:title "Staff Student Ontology" ;
+                                                      owl:versionInfo 2.0 .
+
+#################################################################
+#    Annotation properties
+#################################################################
+
+###  http://purl.org/dc/terms/creator
+dcterms:creator rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/description
+dcterms:description rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/license
+dcterms:license rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/title
+dcterms:title rdf:type owl:AnnotationProperty .
+
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#employedAs
+:employedAs rdf:type owl:ObjectProperty .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#residentOf
+:residentOf rdf:type owl:ObjectProperty ,
+                     owl:FunctionalProperty .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#studies
+:studies rdf:type owl:ObjectProperty .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#numberOfHoursEmployed
+:numberOfHoursEmployed rdf:type owl:DatatypeProperty ,
+                                owl:FunctionalProperty ;
+                       rdfs:range xsd:int .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Academic
+:Academic rdf:type owl:Class ;
+          owl:equivalentClass [ rdf:type owl:Class ;
+                                owl:oneOf ( :AssistantProfessor
+                                            :AssociateProfessor
+                                            :Professor
+                                          )
+                              ] ;
+          rdfs:subClassOf :Staff .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Administrator
+:Administrator rdf:type owl:Class ;
+               owl:equivalentClass [ rdf:type owl:Class ;
+                                     owl:oneOf ( :AdmissionsOfficer
+                                                 :FinanceOfficer
+                                               )
+                                   ] ;
+               rdfs:subClassOf :Staff .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#ArtCourse
+:ArtCourse rdf:type owl:Class .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#ArtStudent
+:ArtStudent rdf:type owl:Class ;
+            owl:equivalentClass [ owl:intersectionOf ( :Student
+                                                       [ owl:intersectionOf ( [ rdf:type owl:Restriction ;
+                                                                                owl:onProperty :studies ;
+                                                                                owl:allValuesFrom :ArtCourse
+                                                                              ]
+                                                                              [ rdf:type owl:Restriction ;
+                                                                                owl:onProperty :studies ;
+                                                                                owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                                                                owl:onClass :ArtCourse
+                                                                              ]
+                                                                            ) ;
+                                                         rdf:type owl:Class
+                                                       ]
+                                                     ) ;
+                                  rdf:type owl:Class
+                                ] .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#AsianCountry
+:AsianCountry rdf:type owl:Class ;
+              rdfs:subClassOf :NonEUCountry ;
+              owl:disjointWith :NorthAmericanCountry .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Country
+:Country rdf:type owl:Class .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Course
+:Course rdf:type owl:Class .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#EU_Country
+:EU_Country rdf:type owl:Class ;
+            rdfs:subClassOf :Country .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#FullTimeStudent
+:FullTimeStudent rdf:type owl:Class ;
+                 owl:equivalentClass [ owl:intersectionOf ( :Student
+                                                            [ rdf:type owl:Restriction ;
+                                                              owl:onProperty :studies ;
+                                                              owl:minQualifiedCardinality "4"^^xsd:nonNegativeInteger ;
+                                                              owl:onClass :Course
+                                                            ]
+                                                          ) ;
+                                       rdf:type owl:Class
+                                     ] .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#HomeStudent
+:HomeStudent rdf:type owl:Class ;
+             owl:equivalentClass [ owl:intersectionOf ( :Student
+                                                        [ rdf:type owl:Restriction ;
+                                                          owl:onProperty :residentOf ;
+                                                          owl:someValuesFrom :EU_Country
+                                                        ]
+                                                      ) ;
+                                   rdf:type owl:Class
+                                 ] ;
+             owl:disjointWith :OverseasStudent .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#JapaneseStudent
+:JapaneseStudent rdf:type owl:Class ;
+                 owl:equivalentClass [ owl:intersectionOf ( :Student
+                                                            [ rdf:type owl:Restriction ;
+                                                              owl:onProperty :residentOf ;
+                                                              owl:hasValue :Japan
+                                                            ]
+                                                          ) ;
+                                       rdf:type owl:Class
+                                     ] .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Job
+:Job rdf:type owl:Class .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#NonEUCountry
+:NonEUCountry rdf:type owl:Class ;
+              rdfs:subClassOf :Country .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#NorthAmericanCountry
+:NorthAmericanCountry rdf:type owl:Class ;
+                      rdfs:subClassOf :NonEUCountry .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#NorthAmericanStudent
+:NorthAmericanStudent rdf:type owl:Class ;
+                      owl:equivalentClass [ owl:intersectionOf ( :Student
+                                                                 [ rdf:type owl:Restriction ;
+                                                                   owl:onProperty :residentOf ;
+                                                                   owl:someValuesFrom :NorthAmericanCountry
+                                                                 ]
+                                                               ) ;
+                                            rdf:type owl:Class
+                                          ] .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#OverseasStudent
+:OverseasStudent rdf:type owl:Class ;
+                 owl:equivalentClass [ owl:intersectionOf ( :Student
+                                                            [ rdf:type owl:Restriction ;
+                                                              owl:onProperty :residentOf ;
+                                                              owl:someValuesFrom :NonEUCountry
+                                                            ]
+                                                          ) ;
+                                       rdf:type owl:Class
+                                     ] .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Person
+:Person rdf:type owl:Class .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Staff
+:Staff rdf:type owl:Class ;
+       owl:equivalentClass [ rdf:type owl:Restriction ;
+                             owl:onProperty :employedAs ;
+                             owl:someValuesFrom :Job
+                           ] ;
+       rdfs:subClassOf :Person .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Student
+:Student rdf:type owl:Class ;
+         owl:equivalentClass [ rdf:type owl:Restriction ;
+                               owl:onProperty :studies ;
+                               owl:someValuesFrom :Course
+                             ] ;
+         rdfs:subClassOf :Person .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#UKStudent
+:UKStudent rdf:type owl:Class ;
+           owl:equivalentClass [ owl:intersectionOf ( :Student
+                                                      [ rdf:type owl:Restriction ;
+                                                        owl:onProperty :residentOf ;
+                                                        owl:hasValue :UK
+                                                      ]
+                                                    ) ;
+                                 rdf:type owl:Class
+                               ] .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#AI
+:AI rdf:type owl:NamedIndividual ,
+             :Course .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#AdmissionsOfficer
+:AdmissionsOfficer rdf:type owl:NamedIndividual ,
+                            :Job .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Alba
+:Alba rdf:type owl:NamedIndividual ,
+               :ArtCourse ,
+               :Course .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#AssistantProfessor
+:AssistantProfessor rdf:type owl:NamedIndividual ,
+                             :Job ;
+                    :employedAs :AdmissionsOfficer ,
+                                :AssistantProfessor .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#AssociateProfessor
+:AssociateProfessor rdf:type owl:NamedIndividual ,
+                             :Job .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Bob
+:Bob rdf:type owl:NamedIndividual ;
+     :employedAs :AdmissionsOfficer ,
+                 :AssistantProfessor .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Dance
+:Dance rdf:type owl:NamedIndividual ,
+                :ArtCourse ,
+                :Course .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Databases
+:Databases rdf:type owl:NamedIndividual ,
+                    :Course .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#EnglishLiterature
+:EnglishLiterature rdf:type owl:NamedIndividual ,
+                            :ArtCourse ,
+                            :Course .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#FinanceOfficer
+:FinanceOfficer rdf:type owl:NamedIndividual ,
+                         :Job .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Gaelic
+:Gaelic rdf:type owl:NamedIndividual ,
+                 :ArtCourse ,
+                 :Course .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Jane
+:Jane rdf:type owl:NamedIndividual ;
+      :employedAs :Professor .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Japan
+:Japan rdf:type owl:NamedIndividual ,
+                :AsianCountry .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Jim
+:Jim rdf:type owl:NamedIndividual ;
+     :studies :Dance ,
+              :EnglishLiterature .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Mia
+:Mia rdf:type owl:NamedIndividual ,
+              :Person ;
+     :residentOf :Japan ;
+     :studies :AI ,
+              :EnglishLiterature ,
+              :Programming .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Mike
+:Mike rdf:type owl:NamedIndividual ,
+               :Person ;
+      :residentOf :UK ;
+      :studies :Programming .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Networking
+:Networking rdf:type owl:NamedIndividual ,
+                     :Course .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Professor
+:Professor rdf:type owl:NamedIndividual ,
+                    :Job .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Programming
+:Programming rdf:type owl:NamedIndividual ,
+                      :Course .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Theory
+:Theory rdf:type owl:NamedIndividual ,
+                 :Course .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#Tom
+:Tom rdf:type owl:NamedIndividual ,
+              :Person ;
+     :residentOf :USA ;
+     :studies :AI ,
+              :Databases ,
+              :Networking ,
+              :Programming ;
+     :numberOfHoursEmployed "20"^^xsd:int .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#UK
+:UK rdf:type owl:NamedIndividual ,
+             :EU_Country .
+
+
+###  https://alasdairgray.github.io/ns/StaffStudent.owl#USA
+:USA rdf:type owl:NamedIndividual ,
+              :NorthAmericanCountry .
+
+
+#################################################################
+#    General axioms
+#################################################################
+
+[ rdf:type owl:AllDifferent ;
+  owl:distinctMembers ( :AI
+                        :Databases
+                      )
+] .
+
+
+[ rdf:type owl:AllDifferent ;
+  owl:distinctMembers ( :AI
+                        :Programming
+                      )
+] .
+
+
+[ rdf:type owl:AllDifferent ;
+  owl:distinctMembers ( :Networking
+                        :Programming
+                      )
+] .
+
+
+###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi
